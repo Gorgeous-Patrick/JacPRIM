@@ -2,7 +2,7 @@ node Data {
   x: float[SIZE];
   y: float[SIZE];
   centroid: int[SIZE];
-};
+}
 
 walker kmeans_walk {
   centroidx: float[K];
@@ -21,7 +21,7 @@ walker kmeans_walk {
       }
     }
   }
-};
+}
 
 
 with entry {
