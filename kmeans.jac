@@ -1,6 +1,6 @@
 node Data {
-  x: float[SIZE];
-  y: float[SIZE];
+  x: int[SIZE];
+  y: int[SIZE];
   centroid: int[SIZE];
 }
 
@@ -25,8 +25,33 @@ walker kmeans_walk {
 
 
 with entry {
-  // Async Spawn multiple walkers
-  // Wait for them
-  // Collect the results
-  // Recalculate the centroids
+  // Randomize centroids
+  centroidx = [];
+  centroidy = [];
+  for i in rnage(K) {
+    centroidx.append(rand());
+    centroidy.append(rand());
+  }
+  while true {
+    for i in range(N) {
+      wlk[i] = aync data[i] spawn kmeans_walk(centroidx, centroidy);
+    }
+    for i in range(N) {
+      wait wlk[i];
+    }
+    // Recalculate the centroids
+    count = centroidy = centroidx = [0] * K;
+    for i in range(N) {
+      for j in range(SIZE) {
+        count[data[i].centroid[j]] += 1;
+        centroidx[data[i].centroid[j]] += data[i].x[j];
+        centroidy[data[i].centroid[j]] += data[i].y[j];
+      }
+    }
+    
+    for i in range(K) {
+      centroidx[i] /= count[i];
+      centroidy[i] /= count[i];
+    }
+  }
 }
