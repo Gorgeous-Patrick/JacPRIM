@@ -9,8 +9,8 @@ add_subdirectory(host)
 
 # Add custom target for DPU code
 add_custom_target(dpu_code ALL
-    COMMAND dpu-upmem-dpurte-clang -O2 -o ${CMAKE_BINARY_DIR}/bin/dpu_code dpu/dpu_code.c
-    DEPENDS ${CMAKE_SOURCE_DIR}/dpu/dpu_code.c
+    COMMAND dpu-upmem-dpurte-clang -O2 -o ${CMAKE_BINARY_DIR}/bin/dpu_code dpu/task.c -I ${CMAKE_SOURCE_DIR}/support/
+    DEPENDS ${CMAKE_SOURCE_DIR}/dpu/task.c ${CMAKE_SOURCE_DIR}/support/common.h
     COMMENT "Building DPU binary..."
 )
 

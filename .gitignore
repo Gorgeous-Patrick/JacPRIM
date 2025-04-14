@@ -1,2 +1,7 @@
 env/
 __jac_gen__/
+CMakeCache.txt
+cmake_install.cmake
+bin/
+Makefile
+CMakeFiles/
