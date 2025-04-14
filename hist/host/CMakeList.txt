@@ -1,0 +1,9 @@
+# Host C code using normal compiler
+add_executable(host_main main.c)
+
+# Link UPMEM host runtime
+target_link_libraries(host_main
+    dpu
+    pthread
+)
+
