@@ -1,6 +1,6 @@
 #pragma once
 
-#define NODE_NUM 99
+#define NODE_NUM 100
 #define NAME_SIZE 30
 #define MAX_NODE_NUM_PER_DPU 8
 #define NUM_DPU 20
@@ -23,11 +23,9 @@ struct walker_impl_t {
   struct walker_t walker;
 };
 
-struct edge_t {};
 struct edge_impl_t {
   int from;
   int to;
-  struct edge_t edge;
 };
 
 struct metadata_t {

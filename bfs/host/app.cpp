@@ -52,8 +52,8 @@ std::vector<metadata_t> send_metadata_to_dpu(const std::vector<DpuSet *> &dpus, 
         for (size_t j = 0; j < NODE_NUM; ++j) {
             if (node_assignments[j] == i) {
                 metadata[i].node_available[metadata[i].node_num++] = j;
+                metadata[i].edge_num += network[j].size();
             }
-            metadata[i].edge_num = network[j].size();
         }
         dpus[i]->copy("metadata", std::vector<metadata_t>(1, metadata[i]));
     }
@@ -122,8 +122,8 @@ void send_nodes_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<node
             }
         }
         auto edges_to_send_aligned = align_data_size(edges_to_send);
-        dpus[i]->copy("nodes", nodes_to_send);
-        dpus[i]->copy("edges", edges_to_send_aligned);
+        dpus[i]->copy("nodes", std::vector<std::vector<node_t>>(1, nodes_to_send));
+        dpus[i]->copy("edges", std::vector<std::vector<edge_impl_t>>(1, edges_to_send_aligned));
     }
 }
 
@@ -147,16 +147,17 @@ int main(int argc, char **argv) {
 
         std::cout << "====== New Iteration ======" << std::endl;
         uint32_t dpu_id = distribute_walker(walker, dpus, node_assignments);
-        dpus[dpu_id]->exec();
+        try {
+            dpus[dpu_id]->exec();
+        } catch (...) {}
         for (uint32_t i = 0; i < dpus.size(); i++) {
             auto dpu = dpus[i];
             dpu->log(std::cout);
         }
         walker = collect_walker(dpus, dpu_id, node_assignments);
         cnt++;
-        if (cnt > 100) {
-            break;
-        }
     }
+
+    std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
     return 0;
 }
