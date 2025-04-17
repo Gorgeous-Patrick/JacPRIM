@@ -3,8 +3,6 @@ node GraphNode {
   has visited: bool = False;
 }
 
-edge GraphEdge {}
-
 walker bfs {
   can bfs with GraphNode entry {
     print(here.node_name);
