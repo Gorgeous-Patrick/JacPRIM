@@ -8,6 +8,7 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y \
     cmake \
     ninja-build \
+    ssh \
     && apt-get clean
 
 # Set default user if needed

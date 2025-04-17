@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/workspaces/JacPRIM/bfs/dpu",
+  "command": "clang  -I/workspaces/JacPRIM/bfs/dpu/../support  --target=dpu-upmem-dpurte -D__UPMEM__ -O2   -std=gnu11 -o CMakeFiles/dpu_program.dir/task.c.o   -c /workspaces/JacPRIM/bfs/dpu/task.c",
+  "file": "/workspaces/JacPRIM/bfs/dpu/task.c"
+},
+{
+  "directory": "/workspaces/JacPRIM/bfs/host",
+  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/bfs/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/app.cpp.o -c /workspaces/JacPRIM/bfs/host/app.cpp",
+  "file": "/workspaces/JacPRIM/bfs/host/app.cpp"
+}
+]
