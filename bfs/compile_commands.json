@@ -8,5 +8,10 @@
   "directory": "/workspaces/JacPRIM/bfs/host",
   "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/bfs/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/app.cpp.o -c /workspaces/JacPRIM/bfs/host/app.cpp",
   "file": "/workspaces/JacPRIM/bfs/host/app.cpp"
+},
+{
+  "directory": "/workspaces/JacPRIM/bfs/host",
+  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/bfs/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/cpu_bfs.cpp.o -c /workspaces/JacPRIM/bfs/host/cpu_bfs.cpp",
+  "file": "/workspaces/JacPRIM/bfs/host/cpu_bfs.cpp"
 }
 ]

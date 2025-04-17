@@ -7,6 +7,9 @@
 #include <vector>
 #include "common.h"
 #include <cstring>
+#include "cpu_bfs.h"
+
+// #define BFS_BASED_ASSIGNMENT
 
 using namespace dpu;
 
@@ -93,14 +96,9 @@ walker_impl_t collect_walker(const std::vector<DpuSet *> &dpus, uint32_t dpu_id,
     return walker;
 }
 
-int ceil_div(int a, int b) {
-    return (a + b - 1) / b;
-}
-
 int align_data_size(int size) {
     return (ceil_div(size, 8)) * 8;
 }
-
 template <typename T>
 std::vector<T> align_data_size(std::vector<T> vec) {
     int size = align_data_size(vec.size());
@@ -130,7 +128,12 @@ void send_nodes_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<node
 int main(int argc, char **argv) {
     auto network = create_random_network();
     auto nodes = create_nodes();
+    #ifdef BFS_BASED_ASSIGNMENT
+    auto node_assignments = generate_bfs_based_node_assignment(network);
+    #else
     auto node_assignments = generate_naive_node_assignment();
+    #endif
+
     std::cout << "Generated the graph" << std::endl;
     walker_impl_t walker = create_walker();
     int cnt = 0;

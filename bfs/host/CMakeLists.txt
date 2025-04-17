@@ -3,7 +3,7 @@ set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
 
 # Host executable
-add_executable(host app.cpp)
+add_executable(host app.cpp cpu_bfs.cpp)
 
 # Link UPMEM SDK libraries
 target_include_directories(host PRIVATE /opt/upmem/include/dpu)
