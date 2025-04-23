@@ -13,5 +13,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Pass the SDK path down
-add_subdirectory(dpu)
+# add_subdirectory(dpu)
 add_subdirectory(host)
