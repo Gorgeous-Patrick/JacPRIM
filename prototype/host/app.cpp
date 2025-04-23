@@ -94,35 +94,41 @@ void send_nodes_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<node
 int main(int argc, char **argv) {
     auto network = create_random_network();
     auto nodes = create_nodes();
-    auto node_assignments = generate_bfs_based_node_assignment(network);
+    auto node_assignments_async = generate_bfs_based_async_node_assignment(network);
 
     std::cout << "Generated the graph" << std::endl;
-    walker_impl_t walker = create_walker();
-    int cnt = 0;
-    while (walker.container_size > 0) {
-        auto system = DpuSet::allocate(NUM_DPU);
-        auto dpus = system.dpus();
-        for (auto dpu : dpus) {
-            dpu->load("dpu");
-        }
-        auto metadata = send_metadata_to_dpu(system.dpus(), node_assignments, network);
-        std::cout << "Sent meta data to DPU" << std::endl;
-        send_nodes_to_dpu(system.dpus(), nodes, metadata, network);
-        std::cout << "Send edge to DPU" << std::endl;
-
-        std::cout << "====== New Iteration ======" << std::endl;
-        uint32_t dpu_id = distribute_walker(walker, dpus, node_assignments);
-        try {
-            dpus[dpu_id]->exec();
-        } catch (...) {}
-        for (uint32_t i = 0; i < dpus.size(); i++) {
-            auto dpu = dpus[i];
-            dpu->log(std::cout);
-        }
-        walker = collect_walker(dpus, dpu_id, node_assignments);
-        cnt++;
+    // Print out the node assignments
+    std::cout << "Node assignments:" << std::endl;
+    for (size_t i = 0; i < node_assignments_async.size(); ++i) {
+        std::cout << "Node " << i << " assigned to DPU " << node_assignments_async[i] << std::endl;
     }
 
-    std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
-    return 0;
+    // walker_impl_t walker = create_walker();
+    // int cnt = 0;
+    // while (walker.container_size > 0) {
+    //     auto system = DpuSet::allocate(NUM_DPU);
+    //     auto dpus = system.dpus();
+    //     for (auto dpu : dpus) {
+    //         dpu->load("dpu");
+    //     }
+    //     auto metadata = send_metadata_to_dpu(system.dpus(), node_assignments, network);
+    //     std::cout << "Sent meta data to DPU" << std::endl;
+    //     send_nodes_to_dpu(system.dpus(), nodes, metadata, network);
+    //     std::cout << "Send edge to DPU" << std::endl;
+
+    //     std::cout << "====== New Iteration ======" << std::endl;
+    //     uint32_t dpu_id = distribute_walker(walker, dpus, node_assignments);
+    //     try {
+    //         dpus[dpu_id]->exec();
+    //     } catch (...) {}
+    //     for (uint32_t i = 0; i < dpus.size(); i++) {
+    //         auto dpu = dpus[i];
+    //         dpu->log(std::cout);
+    //     }
+    //     walker = collect_walker(dpus, dpu_id, node_assignments);
+    //     cnt++;
+    // }
+
+    // std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
+    // return 0;
 }
