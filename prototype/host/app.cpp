@@ -92,8 +92,8 @@ void send_nodes_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<node
 }
 
 int main(int argc, char **argv) {
-    auto network = create_random_network();
-    auto nodes = create_nodes();
+    auto network = create_va_network(1000);
+    auto nodes = create_nodes(network.size());
     auto node_assignments_async = generate_bfs_based_async_node_assignment(network);
 
     std::cout << "Generated the graph" << std::endl;

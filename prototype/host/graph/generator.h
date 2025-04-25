@@ -8,5 +8,6 @@ struct edge_info_t {
 };
 
 using network_adj_list_t = std::vector<std::vector<edge_info_t>>;
-network_adj_list_t create_random_network();
-std::vector<node_t> create_nodes();
+network_adj_list_t create_random_network(uint64_t size);
+std::vector<node_t> create_nodes(uint64_t size);
+network_adj_list_t create_va_network(uint32_t vector_size);
