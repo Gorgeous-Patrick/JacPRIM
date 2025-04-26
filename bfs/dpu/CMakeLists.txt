@@ -8,4 +8,4 @@ add_executable(dpu_program task.c)
 target_include_directories(dpu_program PRIVATE ../support)
 
 # Set the output name to include `.dpu`
-set_target_properties(dpu_program PROPERTIES OUTPUT_NAME "dpu")
+set_target_properties(dpu_program PROPERTIES OUTPUT_NAME "dev")

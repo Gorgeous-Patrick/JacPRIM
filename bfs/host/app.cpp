@@ -48,7 +48,7 @@ std::vector<uint32_t> generate_naive_node_assignment() {
     return node_assignments;
 }
 
-std::vector<metadata_t> send_metadata_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<uint32_t> &node_assignments, std::vector<std::vector<long>> &network) {
+std::vector<metadata_t> send_metadata_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<uint32_t> &node_assignments, const std::vector<std::vector<long>> &network) {
     std::vector<metadata_t> metadata(dpus.size());
     for (size_t i = 0; i < dpus.size(); ++i) {
         metadata[i].node_num = 0;
@@ -125,9 +125,9 @@ void send_nodes_to_dpu(const std::vector<DpuSet *> &dpus, const std::vector<node
     }
 }
 
-int main(int argc, char **argv) {
-    auto network = create_random_network();
-    auto nodes = create_nodes();
+int run() {
+    const auto network = create_random_network();
+    const auto nodes = create_nodes();
     #ifdef BFS_BASED_ASSIGNMENT
     auto node_assignments = generate_bfs_based_node_assignment(network);
     #else
@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
         auto system = DpuSet::allocate(NUM_DPU);
         auto dpus = system.dpus();
         for (auto dpu : dpus) {
-            dpu->load("dpu");
+            dpu->load("dev");
         }
         auto metadata = send_metadata_to_dpu(system.dpus(), node_assignments, network);
         std::cout << "Sent meta data to DPU" << std::endl;
@@ -161,6 +161,17 @@ int main(int argc, char **argv) {
         cnt++;
     }
 
-    std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
-    return 0;
+    // std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
+    return cnt;
+}
+
+int main() {
+    int sum = 0;
+    for (int i = 0; i < 10; ++i) {
+        std::cout << "Running iteration " << i + 1 << std::endl;
+        int cnt = run();
+        sum += cnt;
+        std::cout << "Walker finished after " << cnt << " iterations" << std::endl;
+    }
+    std::cout << "Average iterations: " << static_cast<double>(sum) / 10 << std::endl;
 }
