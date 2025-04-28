@@ -39,8 +39,9 @@ with entry {
 
   data3 +:FinalEdge:+> data6;
   
-  wlk1 = data1 spawn regular();
-  wlk2 = data4 spawn regular();
+  wlk1 = data1 spawn regular(); # Async
+  wlk2 = data4 spawn regular(); # Async
+  # Wait for both walkers to finish
 
   end = data3 spawn final();
   print(end.result);
