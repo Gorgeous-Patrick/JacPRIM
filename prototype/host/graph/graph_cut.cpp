@@ -38,27 +38,62 @@ std::vector<int> bfs(const network_adj_list_t & network) {
     return traversal_order;
 }
 
-std::vector<int> bfs_async(const network_adj_list_t & network, std::vector<int> & visited, int start) {
-    std::vector<int> traversal_order;
-    std::vector<int> queue;
-    queue.push_back(start);
+std::vector<std::vector<int>> get_next_steps(const network_adj_list_t & network, int current_node, std::vector<int> & visited) {
+    std::vector<std::vector<int>> next_nodes;
+    std::vector<int> one_level;
+    for (const auto& neighbor : network[current_node]) {
+        if (visited[neighbor.to]) {
+            continue;
+        }
+        if (neighbor.async) {
+            one_level.push_back(neighbor.to);
+        } else {
+            if (!one_level.empty()) {
+                next_nodes.push_back(one_level);
+                one_level.clear();
+            }
+            next_nodes.push_back({(int)neighbor.to});
+        }
+    }
+    
+}
+
+std::vector<std::vector<int>> bfs_async(const network_adj_list_t & network, std::vector<int> & visited, int start) {
+    std::vector<std::vector<int>> traversal_order;
+    std::vector<std::vector<int>> queue;
+    queue.push_back({start});
     visited[start] = 1;
 
     while (!queue.empty()) {
-        int current_node = queue.front();
+        std::vector<int> current_nodes = queue.front();
         queue.erase(queue.begin());
-        traversal_order.push_back(current_node);
+        traversal_order.push_back(current_nodes);
 
-        for (const auto& neighbor : network[current_node]) {
-            if (!visited[neighbor.to]) {
-                visited[neighbor.to] = 1;
-                if (neighbor.async) {
-                    // Call another bfs function for async edges
-                    std::vector<int> async_traversal = bfs_async(network, visited, neighbor.to);
-                    traversal_order.insert(traversal_order.end(), async_traversal.begin(), async_traversal.end());
-                } else {
-                    queue.push_back(neighbor.to);
+        std::vector<std::vector<std::vector<int>>> next_nodes;
+        int max_length = 0;
+        for (const auto & current_node : current_nodes) {
+            auto tmp = get_next_steps(network, current_node, visited);
+            max_length = std::max(max_length, (int)tmp.size());
+            next_nodes.push_back(tmp);
+        }
+
+        // Merge the next nodes layer by layer
+        // One level is the concatenation of all next nodes of the same index
+        for (int i = 0; i < max_length; ++i) {
+            std::vector<int> one_level;
+            for (const auto & next_node : next_nodes) {
+                if (i < next_node.size()) {
+                    one_level.insert(one_level.end(), next_node[i].begin(), next_node[i].end());
                 }
+            }
+
+            if (!one_level.empty()) {
+                for (const auto & node : one_level) {
+                    if (!visited[node]) {
+                        visited[node] = 1;
+                    }
+                }
+                queue.push_back(one_level);
             }
         }
     }
@@ -77,13 +112,31 @@ std::vector<uint32_t> generate_bfs_based_node_assignment(const network_adj_list_
 
 
 std::vector<uint32_t> generate_bfs_based_async_node_assignment(const network_adj_list_t & network) {
+    std::vector<int> visited(NODE_NUM, 0);
+    std::vector<std::vector<int>> traversal_order = bfs_async(network, visited, 0);
 
+    // Initialize node assignments
+    std::vector<uint32_t> node_assignments(NODE_NUM, -1);
+    std::vector<int> dpu_node_count(NUM_DPU, 0); // Tracks the number of nodes assigned to each DPU
 
-  std::vector<int> visited(NODE_NUM, 0);
-  std::vector<int> traversal_order = bfs_async(network, visited, 0);
-  std::vector<uint32_t> node_assignments(NODE_NUM);
-  for (size_t i = 0; i < traversal_order.size(); ++i) {
-    node_assignments[traversal_order[i]] = i / (ceil_div(NODE_NUM, NUM_DPU));
-  }
-  return node_assignments;
+    // Assign nodes layer by layer
+    for (const auto& layer : traversal_order) {
+        int dpu_index = 0;
+
+        for (int node : layer) {
+            // Find the next available DPU
+            while (dpu_node_count[dpu_index] >= MAX_NODE_NUM_PER_DPU) {
+                dpu_index = (dpu_index + 1) % NUM_DPU;
+            }
+
+            // Assign the node to the current DPU
+            node_assignments[node] = dpu_index;
+            dpu_node_count[dpu_index]++;
+
+            // Move to the next DPU for the next node
+            dpu_index = (dpu_index + 1) % NUM_DPU;
+        }
+    }
+
+    return node_assignments;
 }
