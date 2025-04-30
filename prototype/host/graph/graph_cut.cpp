@@ -1,6 +1,7 @@
 #include "common.h"
 #include "generator.h"
 #include "graph_cut.h"
+#include <iostream>
 
 std::vector<uint32_t> generate_naive_node_assignment() {
     // Assign nodes to DPUs
@@ -55,7 +56,10 @@ std::vector<std::vector<int>> get_next_steps(const network_adj_list_t & network,
             next_nodes.push_back({(int)neighbor.to});
         }
     }
-    
+    if (!one_level.empty()) {
+        next_nodes.push_back(one_level);
+    }
+    return next_nodes;
 }
 
 std::vector<std::vector<int>> bfs_async(const network_adj_list_t & network, std::vector<int> & visited, int start) {
@@ -112,12 +116,21 @@ std::vector<uint32_t> generate_bfs_based_node_assignment(const network_adj_list_
 
 
 std::vector<uint32_t> generate_bfs_based_async_node_assignment(const network_adj_list_t & network) {
-    std::vector<int> visited(NODE_NUM, 0);
+    std::vector<int> visited(network.size(), 0);
     std::vector<std::vector<int>> traversal_order = bfs_async(network, visited, 0);
 
+    // Print the traversal order
+    for (const auto& layer : traversal_order) {
+        std::cout << "Layer: ";
+        for (int node : layer) {
+            std::cout << node << " ";
+        }
+        std::cout << std::endl;
+    }
+
     // Initialize node assignments
-    std::vector<uint32_t> node_assignments(NODE_NUM, -1);
-    std::vector<int> dpu_node_count(NUM_DPU, 0); // Tracks the number of nodes assigned to each DPU
+    std::vector<uint32_t> node_assignments(network.size(), -1);
+    std::vector<int> dpu_node_count(network.size(), 0); // Tracks the number of nodes assigned to each DPU
 
     // Assign nodes layer by layer
     for (const auto& layer : traversal_order) {
@@ -125,10 +138,17 @@ std::vector<uint32_t> generate_bfs_based_async_node_assignment(const network_adj
 
         for (int node : layer) {
             // Find the next available DPU
-            while (dpu_node_count[dpu_index] >= MAX_NODE_NUM_PER_DPU) {
+            for (int i = 0; i < NUM_DPU; ++i) {
+                if (dpu_node_count[dpu_index] < MAX_NODE_NUM_PER_DPU) {
+                    break;
+                }
                 dpu_index = (dpu_index + 1) % NUM_DPU;
             }
-
+            // If all DPUs are full, break out of the loop
+            if (dpu_node_count[dpu_index] >= MAX_NODE_NUM_PER_DPU) {
+                std::cerr << "All DPUs are full. Cannot assign more nodes." << std::endl;
+                throw std::runtime_error("Node assignment failed");
+            }
             // Assign the node to the current DPU
             node_assignments[node] = dpu_index;
             dpu_node_count[dpu_index]++;

@@ -2,7 +2,7 @@
 
 #define NODE_NUM 100
 #define NAME_SIZE 30
-#define MAX_NODE_NUM_PER_DPU 8
+#define MAX_NODE_NUM_PER_DPU 800
 #define NUM_DPU 20
 #define MAX_OUTPUT 1000
 #define MAX_EDGE_NUM_PER_DPU 1000
