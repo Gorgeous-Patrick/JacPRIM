@@ -1,17 +1,17 @@
 [
 {
   "directory": "/workspaces/JacPRIM/prototype/host",
-  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/app.cpp.o -c /workspaces/JacPRIM/prototype/host/app.cpp",
+  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support  -g   -std=gnu++17 -o CMakeFiles/host.dir/app.cpp.o -c /workspaces/JacPRIM/prototype/host/app.cpp",
   "file": "/workspaces/JacPRIM/prototype/host/app.cpp"
 },
 {
   "directory": "/workspaces/JacPRIM/prototype/host",
-  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/graph/generator.cpp.o -c /workspaces/JacPRIM/prototype/host/graph/generator.cpp",
+  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support  -g   -std=gnu++17 -o CMakeFiles/host.dir/graph/generator.cpp.o -c /workspaces/JacPRIM/prototype/host/graph/generator.cpp",
   "file": "/workspaces/JacPRIM/prototype/host/graph/generator.cpp"
 },
 {
   "directory": "/workspaces/JacPRIM/prototype/host",
-  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support    -std=gnu++17 -o CMakeFiles/host.dir/graph/graph_cut.cpp.o -c /workspaces/JacPRIM/prototype/host/graph/graph_cut.cpp",
+  "command": "g++   -I/opt/upmem/include/dpu -I/workspaces/JacPRIM/prototype/host/../support  -g   -std=gnu++17 -o CMakeFiles/host.dir/graph/graph_cut.cpp.o -c /workspaces/JacPRIM/prototype/host/graph/graph_cut.cpp",
   "file": "/workspaces/JacPRIM/prototype/host/graph/graph_cut.cpp"
 }
 ]
