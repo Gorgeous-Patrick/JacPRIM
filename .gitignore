@@ -5,3 +5,6 @@ cmake_install.cmake
 bin/
 Makefile
 CMakeFiles/
+snap_data/
+*.png
+*.dot
