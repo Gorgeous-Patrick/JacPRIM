@@ -67,3 +67,15 @@ def random_partition(graph, num_partitions):
     for i, name in enumerate(graph.nodes()):
         res[name] = random.randint(0, num_partitions - 1)
     return res
+
+def calculate_performance(walker_traces: dict, label: dict[str, int]):
+    res = 0
+    for node, trace in walker_traces.items():
+        edges = list(zip(trace[:-1], trace[1:]))
+        for u, v in edges:
+            if label[u] != label[v]:
+                # print(f"Edge ({u}, {v}) crosses partition boundaries: {label[u]} vs {label[v]}")
+                res += 1
+    print(f"Total edges crossing partition boundaries: {res}")
+    return res
+

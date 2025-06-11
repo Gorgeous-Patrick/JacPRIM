@@ -2,7 +2,7 @@ import os
 import networkx as nx
 from tqdm import tqdm
 from data_prep import download_and_cache, get_subgraph
-from partitioner import metis_partition, random_partition
+from partitioner import metis_partition, random_partition, calculate_performance
 import matplotlib.pyplot as plt
 
 
@@ -43,18 +43,6 @@ def simulate_walkers(graph: nx.Graph):
         walker_traces[node] = trace
 
     return walker_traces
-
-def calculate_performance(walker_traces: dict, label: dict[str, int]):
-    res = 0
-    for node, trace in walker_traces.items():
-        edges = list(zip(trace[:-1], trace[1:]))
-        for u, v in edges:
-            if label[u] != label[v]:
-                # print(f"Edge ({u}, {v}) crosses partition boundaries: {label[u]} vs {label[v]}")
-                res += 1
-    print(f"Total edges crossing partition boundaries: {res}")
-    return res
-
 
 
 def main():
