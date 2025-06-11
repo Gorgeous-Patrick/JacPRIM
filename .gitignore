@@ -8,3 +8,4 @@ CMakeFiles/
 snap_data/
 *.png
 *.dot
+.jac_mypy_cache
